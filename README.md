@@ -40,15 +40,24 @@ sudo apt-get install -y ffmpeg tesseract-ocr tesseract-ocr-ind
 
 ### 2. Python dependencies
 
+Untuk coba dulu versi paling ringan (transcript + MoM saja, tanpa speaker ID / OCR layar):
+
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-core.txt
 ```
 
-> Catatan: `torch` + `pyannote.audio` (untuk speaker diarization) cukup besar untuk didownload dan agak
-> lambat kalau jalan di CPU saja. Kalau kamu tidak butuh identifikasi pembicara, jalankan dengan flag
-> `--no-diarization` dan boleh skip install kedua package itu.
+Lalu jalankan dengan flag `--no-diarization --no-ocr`.
+
+Kalau nanti mau tambah fitur speaker ID dan/atau OCR layar, install tambahan sesuai kebutuhan:
+
+```bash
+pip install -r requirements-diarization.txt   # speaker ID (berat: torch + pyannote, ~1-2GB)
+pip install -r requirements-ocr.txt           # OCR teks layar
+# atau langsung semuanya:
+pip install -r requirements.txt
+```
 
 ### 3. Setup API key
 

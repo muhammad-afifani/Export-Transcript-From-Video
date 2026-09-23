@@ -1,13 +1,7 @@
-python-dotenv>=1.0.0
-openai>=1.40.0
-anthropic>=0.34.0
+# Install semua sekaligus (core + diarization + OCR):
+#   pip install -r requirements.txt
+# Untuk instalasi ringan/cepat (hanya transcript + MoM), pakai requirements-core.txt saja.
 
-# Speaker diarization lokal (opsional tapi direkomendasikan; berat, butuh waktu install)
-torch>=2.2.0
-torchaudio>=2.2.0
-pyannote.audio>=3.1.1
-
-# OCR teks layar lokal (opsional)
-opencv-python-headless>=4.9.0
-pytesseract>=0.3.10
-pillow>=10.0.0
+-r requirements-core.txt
+-r requirements-diarization.txt
+-r requirements-ocr.txt
