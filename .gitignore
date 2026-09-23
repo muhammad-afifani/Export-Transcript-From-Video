@@ -1,0 +1,26 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+.env
+
+# Output & file sementara - berisi hasil transkrip video, jangan ikut ter-commit
+output/
+outputs/
+.tmp/
+
+# File video/audio sumber (kemungkinan berisi materi rapat rahasia)
+*.mp4
+*.mkv
+*.mov
+*.avi
+*.webm
+*.m4v
+*.wav
+*.mp3
+
+# Cache model ML (besar, tidak perlu di-commit)
+.cache/
+models_cache/
