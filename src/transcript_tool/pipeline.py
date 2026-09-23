@@ -10,7 +10,7 @@ from .diarize import assign_speakers, run_diarization
 from .merge import build_full_transcript
 from .mom import generate_mom
 from .ocr import extract_frames, ocr_frames
-from .transcribe import transcribe_audio
+from .transcribe import transcribe_audio, transcribe_audio_local
 from .utils import ToolError
 
 ALLOWED_VIDEO_EXT = {".mp4", ".mkv", ".mov", ".avi", ".webm", ".m4v"}
@@ -21,6 +21,8 @@ class PipelineOptions:
     video_path: Path
     output_dir: Path
     language: str | None = "id"
+    engine: str = "openai"  # "openai" (butuh OPENAI_API_KEY) atau "local" (faster-whisper, gratis)
+    local_model_size: str = "small"
     do_diarization: bool = True
     do_ocr: bool = True
     do_mom: bool = True
@@ -56,8 +58,12 @@ def run_pipeline(opts: PipelineOptions) -> PipelineResult:
         print("[1/5] Extract audio dari video (lokal, via ffmpeg)...")
         wav_path = extract_audio(opts.video_path, work_dir / "audio.wav")
 
-        print("[2/5] Transkripsi audio via OpenAI Whisper API...")
-        transcript_segments = transcribe_audio(wav_path, work_dir, opts.language)
+        if opts.engine == "local":
+            print("[2/5] Transkripsi audio lokal (faster-whisper, tanpa API key)...")
+            transcript_segments = transcribe_audio_local(wav_path, opts.language, opts.local_model_size)
+        else:
+            print("[2/5] Transkripsi audio via OpenAI Whisper API...")
+            transcript_segments = transcribe_audio(wav_path, work_dir, opts.language)
         print(f"  Selesai: {len(transcript_segments)} segmen transcript.")
 
         if opts.do_diarization:

@@ -70,3 +70,26 @@ def transcribe_audio(wav_path: Path, work_dir: Path, language: str | None) -> li
                 all_segments.append(TranscriptSegment(start=offset, end=offset, text=text))
 
     return all_segments
+
+
+def transcribe_audio_local(
+    wav_path: Path, language: str | None, model_size: str = "small"
+) -> list[TranscriptSegment]:
+    """Transkripsi audio 100% lokal via faster-whisper. Tidak butuh API key, tidak ada data yang dikirim
+    ke mana pun - hanya model Whisper yang perlu didownload sekali (dari Hugging Face) saat pertama
+    dipakai."""
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError as exc:
+        raise ToolError(
+            "Package 'faster-whisper' belum terinstall. Jalankan: pip install -r requirements-local-whisper.txt"
+        ) from exc
+
+    model = WhisperModel(model_size, device="cpu", compute_type="int8")
+    segments_iter, _info = model.transcribe(str(wav_path), language=language, vad_filter=True)
+
+    return [
+        TranscriptSegment(start=seg.start, end=seg.end, text=seg.text.strip())
+        for seg in segments_iter
+        if seg.text.strip()
+    ]

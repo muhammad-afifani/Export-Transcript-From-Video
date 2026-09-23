@@ -22,6 +22,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--language", default="id", help="Kode bahasa audio untuk Whisper (default: id). Kosongkan untuk auto-detect."
     )
+    parser.add_argument(
+        "--engine",
+        choices=["openai", "local"],
+        default="openai",
+        help="Mesin transkripsi: 'openai' (Whisper API, butuh OPENAI_API_KEY) atau "
+        "'local' (faster-whisper, gratis & tanpa API key, jalan di CPU). Default: openai.",
+    )
+    parser.add_argument(
+        "--local-model-size",
+        default="small",
+        help="Ukuran model faster-whisper saat --engine local (tiny/base/small/medium/large-v3). "
+        "Default: small (cukup akurat & masih cepat di CPU).",
+    )
     parser.add_argument("--no-diarization", action="store_true", help="Lewati speaker diarization.")
     parser.add_argument("--no-ocr", action="store_true", help="Lewati OCR teks layar.")
     parser.add_argument("--no-mom", action="store_true", help="Lewati generate MoM, hanya buat transcript.")
@@ -38,6 +51,8 @@ def main() -> int:
         video_path=args.video,
         output_dir=args.output_dir,
         language=args.language or None,
+        engine=args.engine,
+        local_model_size=args.local_model_size,
         do_diarization=not args.no_diarization,
         do_ocr=not args.no_ocr,
         do_mom=not args.no_mom,
